@@ -1,6 +1,7 @@
 #pragma once
 
 // Standard libs
+#include <stddef.h> // size_t
 
 // Application libs
 #include "display_adapter.h"

@@ -1,5 +1,9 @@
 #pragma once
 
+#if __has_include(<display_gfx.tweaks.h>)
+  #include <display_gfx.tweaks.h>
+#endif
+
 // C Header
 #include <stdint.h>
 
@@ -10,14 +14,15 @@ extern "C" {
 #endif
 
 enum display_adapter_bitmode_t {
-    DISPLAY_ADAPTER_GRAYSCALE_BITMODE_1_BIT = 0x00,
-    DISPLAY_ADAPTER_GRAYSCALE_BITMODE_2_BIT = 0x01,
-    DISPLAY_ADAPTER_GRAYSCALE_BITMODE_4_BIT = 0x02,
-    DISPLAY_ADAPTER_COLOR_BITMODE_8_BIT = 0x03,
+    DISPLAY_ADAPTER_BITMODE_GRAYSCALE_1_BIT = 0x00,
+    DISPLAY_ADAPTER_BITMODE_GRAYSCALE_2_BIT = 0x01,
+    DISPLAY_ADAPTER_BITMODE_GRAYSCALE_4_BIT = 0x02,
+    DISPLAY_ADAPTER_BITMODE_COLOR_8_BIT = 0x03,
 };
 
 enum display_adapter_device_id_t {
-    DISPLAY_ADAPTER_DEVICE_ID_SSD1327 = 0x01
+    DISPLAY_ADAPTER_DEVICE_ID_ZEPHYR_SSD1327 = 0x01,
+    DISPLAY_ADAPTER_DEVICE_ID_ZEPHYR_SSD1306A = 0x02
 };
 
 
@@ -32,9 +37,9 @@ enum display_adapter_rotation_t {
 
 
 enum display_adapter_buffer_addressing_mode_t {
-    DISPLAY_ADAPTER_ADDRESSING_MODE_HORIZONTAL = 0x00,
-    DISPLAY_ADAPTER_ADDRESSING_MODE_VERTICAL = 0x01,
-    DISPLAY_ADAPTER_ADDRESSING_MODE_VERTICAL_BLOCKS = 0x02,
+    DISPLAY_ADAPTER_BUFFER_ADDRESSING_MODE_HORIZONTAL = 0x00,
+    DISPLAY_ADAPTER_BUFFER_ADDRESSING_MODE_VERTICAL = 0x01,
+    DISPLAY_ADAPTER_BUFFER_ADDRESSING_MODE_VERTICAL_BLOCKS = 0x02,
 
 };
 
@@ -42,11 +47,12 @@ struct display_adapter_descriptor {
     uint8_t* display_buffer;
     const uint16_t buffer_size;
     void (*fn_write_buffer_to_display)(struct display_adapter_descriptor*, uint8_t, uint8_t, void*);
+    void (*fn_set_pixel_in_buffer)(struct display_adapter_descriptor*, uint8_t, uint8_t, uint8_t);
     void* payload;
     const uint8_t width;
     const uint8_t height;
     const enum display_adapter_rotation_t rotation;
-    const enum display_adapter_buffer_addressng_mode_t addressing_mode;
+    const enum display_adapter_buffer_addressing_mode_t addressing_mode;
     const enum display_adapter_bitmode_t bitmode;
     const enum display_adapter_device_id_t device_id;
 };

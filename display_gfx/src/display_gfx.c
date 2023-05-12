@@ -6,7 +6,7 @@
 
 // Zephyr Headers
 #ifdef CONFIG_LOG
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #endif
 
 #ifdef CONFIG_LOG
@@ -204,7 +204,7 @@ void display_gfx_draw_gfx_font_len(const struct display_adapter_descriptor *disp
         uint8_t cha = text[i];
         GFXglyph *glyph = &(font->glyph)[cha - font->first];
         display_gfx_draw_gfx_char(display_adapter, x_nextChar, y_start, cha, value, scale_factor, font);
-        x_nextChar += glyph->xAdvance;  // Bug: No consideration for scale_factor
+        x_nextChar += glyph->xAdvance * scale_factor;
     }
 }
 
