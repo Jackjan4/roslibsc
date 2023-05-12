@@ -3,8 +3,7 @@
 // C Header
 #include <stdint.h>
 
-// Zephyr Headers
-#include <drivers/display.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,6 +20,8 @@ enum display_adapter_device_id_t {
     DISPLAY_ADAPTER_DEVICE_ID_SSD1327 = 0x01
 };
 
+
+
 enum display_adapter_rotation_t {
     DISPLAY_ADAPTER_ROTATION_0 = 0x00,
     DISPLAY_ADAPTER_ROTATION_90 = 0x01,
@@ -28,22 +29,32 @@ enum display_adapter_rotation_t {
     DISPLAY_ADAPTER_ROTATION_270 = 0x03,
 };
 
+
+
+enum display_adapter_buffer_addressing_mode_t {
+    DISPLAY_ADAPTER_ADDRESSING_MODE_HORIZONTAL = 0x00,
+    DISPLAY_ADAPTER_ADDRESSING_MODE_VERTICAL = 0x01,
+    DISPLAY_ADAPTER_ADDRESSING_MODE_VERTICAL_BLOCKS = 0x02,
+
+};
+
 struct display_adapter_descriptor {
     uint8_t* display_buffer;
     const uint16_t buffer_size;
-    const struct device* display_device;
+    void (*fn_write_buffer_to_display)(struct display_adapter_descriptor*, uint8_t, uint8_t, void*);
+    void* payload;
     const uint8_t width;
     const uint8_t height;
     const enum display_adapter_rotation_t rotation;
+    const enum display_adapter_buffer_addressng_mode_t addressing_mode;
     const enum display_adapter_bitmode_t bitmode;
     const enum display_adapter_device_id_t device_id;
 };
 
-struct display_adapter_descriptor display_adapter_create_ssd1327(enum display_adapter_bitmode_t bitmode, enum display_adapter_rotation_t rotation, const struct device* display_device);
 
 void display_adapter_set_pixel_in_buffer(const struct display_adapter_descriptor* adapter, uint8_t x, uint8_t y, uint8_t value);
 
-int display_adapter_write_buffer_to_display(const struct display_adapter_descriptor* adapter, uint8_t x, uint8_t y, const struct display_buffer_descriptor* buf_desc);
+int display_adapter_write_buffer_to_display(const struct display_adapter_descriptor* adapter, uint8_t x, uint8_t y, void* payload);
 
 inline void display_adapter_fill_display_buffer(const struct display_adapter_descriptor* adapter, uint8_t value) {
     for (uint16_t i = 0; i < adapter->buffer_size; i++) {
