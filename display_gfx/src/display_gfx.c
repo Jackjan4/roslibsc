@@ -289,6 +289,7 @@ unsigned short display_gfx_get_font_x_size(const char *text, uint8_t scale_facto
 }
 
 void display_gfx_draw_image_grayscale(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t width, uint8_t height, const uint8_t *pixel_data, uint8_t pixels_per_byte) {
+#if defined(DISPLAY_GFX_STATIC_GRAYSCALE_IMG_FORMAT_1_PIXEL_PER_BYTE)
     uint32_t i = 0;
     for (uint8_t y = 0; y < height; y++) {
         for (uint8_t x = 0; x < width; x++) {
@@ -300,4 +301,14 @@ void display_gfx_draw_image_grayscale(const struct display_adapter_descriptor *d
             i++;
         }
     }
+#elif defined(DISPLAY_GFX_STATIC_GRAYSCALE_IMG_FORMAT_2_PIXEL_PER_BYTE)
+
+#elif defined(DISPLAY_GFX_STATIC_GRAYSCALE_IMG_FORMAT_4_PIXEL_PER_BYTE)
+
+
+#elif defined(DISPLAY_GFX_STATIC_GRAYSCALE_IMG_FORMAT_8_PIXEL_PER_BYTE)
+
+#else
+
+#endif
 }

@@ -1,11 +1,14 @@
 #pragma once
 
+
+// Include tweaks
 #if __has_include(<display_gfx.tweaks.h>)
   #include <display_gfx.tweaks.h>
 #endif
 
 // C Header
 #include <stdint.h>
+#include <string.h> // memset
 
 
 
@@ -62,10 +65,8 @@ void display_adapter_set_pixel_in_buffer(const struct display_adapter_descriptor
 
 int display_adapter_write_buffer_to_display(const struct display_adapter_descriptor* adapter, uint8_t x, uint8_t y, void* payload);
 
-inline void display_adapter_fill_display_buffer(const struct display_adapter_descriptor* adapter, uint8_t value) {
-    for (uint16_t i = 0; i < adapter->buffer_size; i++) {
-        adapter->display_buffer[i] = value;
-    }
+inline void display_adapter_fill_display_buffer(const struct display_adapter_descriptor* adapter, unsigned char value) {
+    memset(adapter->display_buffer, value, adapter->buffer_size);
 }
 
 #ifdef __cplusplus

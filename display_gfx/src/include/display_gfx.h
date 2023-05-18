@@ -1,5 +1,14 @@
 #pragma once
 
+
+
+// Include tweaks
+#if __has_include(<display_gfx.tweaks.h>)
+  #include <display_gfx.tweaks.h>
+#endif
+
+
+
 // Standard libs
 #include <stddef.h> // size_t
 
