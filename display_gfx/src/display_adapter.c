@@ -108,10 +108,10 @@ short buffer_position = -1;
     
 }
 
-int display_adapter_write_buffer_to_display(const struct display_adapter_descriptor* adapter, uint8_t x, uint8_t y, void* payload) {
+int display_adapter_write_buffer_to_display(const struct display_adapter_descriptor* adapter, uint8_t x, uint8_t y) {
     int err = 0;
 
-    (adapter->fn_write_buffer_to_display)(adapter, x, y, payload);
+    (adapter->fn_write_buffer_to_display)(adapter, x, y, adapter->payload);
 
     return err;
 }

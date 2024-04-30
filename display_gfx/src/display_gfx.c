@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 // Zephyr Headers
+#ifdef __ZEPHYR__
 #ifdef CONFIG_LOG
 #include <zephyr/logging/log.h>
 #endif
@@ -12,6 +13,9 @@
 #ifdef CONFIG_LOG
 LOG_MODULE_REGISTER(oled_gfx);
 #endif
+#endif
+
+
 
 static float display_gfx_calculate_dino_dini_sigmoid(float x, float k) {
     float dividend = x - k * x;
@@ -23,25 +27,33 @@ static float display_gfx_calculate_dino_dini_sigmoid(float x, float k) {
     return result;
 }
 
+
+
 void display_gfx_draw_pixel(const struct display_adapter_descriptor *display_adapter, uint8_t x, uint8_t y, uint8_t value) {
-    // TODO: Check bounds and stuff
+    // TODO: Check for pixel out of bounds
 
     display_adapter_set_pixel_in_buffer(display_adapter, x, y, value);
 }
 
+
+
 void display_gfx_draw_hline(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t length, uint8_t value) {
-    // Check for display bounds
+    // TODO: Check for display bounds
     for (int i = 0; i < length; i++) {
         display_gfx_draw_pixel(display_adapter, x_start + i, y_start, value);
     }
 }
 
+
+
 void display_gfx_draw_vline(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t length, uint8_t value) {
-    // Check for display bounds
+    // TODO: Check for display bounds
     for (int i = 0; i < length; i++) {
         display_gfx_draw_pixel(display_adapter, x_start, y_start + i, value);
     }
 }
+
+
 
 void display_gfx_draw_line(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t x_end, uint8_t y_end, uint8_t value) {
     if (y_start == y_end) {
@@ -60,7 +72,7 @@ void display_gfx_draw_line(const struct display_adapter_descriptor *display_adap
         return;
     }
 
-    // Bresenham's Algorithm - stolen from german wikipedia
+    // Bresenham's Algorithm for drawing lines - an explanation can be seen here: https://de.wikipedia.org/wiki/Bresenham-Algorithmus
     int delta_x = abs(x_end - x_start);
     int x_direction = x_start < x_end ? 1 : -1;
     int delta_y = -abs(y_end - y_start);
@@ -91,6 +103,8 @@ void display_gfx_draw_line(const struct display_adapter_descriptor *display_adap
     }
 }
 
+
+
 void display_gfx_draw_rectangle(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t x_length, uint8_t y_length, uint8_t value) {
     // Horizontal Lines
     display_gfx_draw_hline(display_adapter, x_start, y_start, x_length, value);
@@ -101,6 +115,8 @@ void display_gfx_draw_rectangle(const struct display_adapter_descriptor *display
     display_gfx_draw_vline(display_adapter, x_start + x_length, y_start, y_length, value);
 }
 
+
+
 void display_gfx_draw_fill_rectangle(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t x_length, uint8_t y_length, uint8_t value) {
     for (int y = 0; y < y_length; y++) {
         for (int x = 0; x < x_length; x++) {
@@ -108,6 +124,8 @@ void display_gfx_draw_fill_rectangle(const struct display_adapter_descriptor *di
         }
     }
 }
+
+
 
 void display_gfx_draw_circle(const struct display_adapter_descriptor *display_adapter, uint8_t x_center, uint8_t y_center, uint8_t r, uint8_t value) {
     int16_t f = 1 - r;
@@ -143,6 +161,8 @@ void display_gfx_draw_circle(const struct display_adapter_descriptor *display_ad
     }
 }
 
+
+
 void display_gfx_draw_gauge(const struct display_adapter_descriptor *display_adapter, uint8_t x_center, uint8_t y_center, uint8_t r, uint16_t angle, uint8_t value) {
     // Draw outer circle
     display_gfx_draw_circle(display_adapter, x_center,
@@ -163,6 +183,8 @@ void display_gfx_draw_gauge(const struct display_adapter_descriptor *display_ada
                           (uint8_t)y_end,
                           value);
 }
+
+
 
 void display_gfx_draw_gfx_char(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t cha, uint8_t value, uint8_t scale_factor, const GFXfont *font) {
     cha = cha - font->first;
@@ -197,6 +219,8 @@ void display_gfx_draw_gfx_char(const struct display_adapter_descriptor *display_
     }
 }
 
+
+
 void display_gfx_draw_gfx_font_len(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, const char *text, size_t len, uint8_t value, uint8_t scale_factor, const GFXfont *font) {
     uint8_t x_nextChar = x_start;
     size_t text_length = len;
@@ -208,10 +232,14 @@ void display_gfx_draw_gfx_font_len(const struct display_adapter_descriptor *disp
     }
 }
 
+
+
 void display_gfx_draw_gfx_font(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, const char *text, uint8_t value, uint8_t scale_factor, const GFXfont *font) {
     size_t len = strlen(text);
     return display_gfx_draw_gfx_font_len(display_adapter, x_start, y_start, text, len, value, scale_factor, font);
 }
+
+
 
 void display_gfx_draw_invert(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t x_end, uint8_t y_end) {
     for (int y = y_start; y < y_end; y++) {
@@ -220,6 +248,8 @@ void display_gfx_draw_invert(const struct display_adapter_descriptor *display_ad
         }
     }
 }
+
+
 
 void display_gfx_draw_half_dino_dini_sigmoid(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, float k, uint8_t x_end, uint8_t y_end, uint8_t value) {
     uint8_t delta_x = x_end - x_start;
@@ -237,6 +267,8 @@ void display_gfx_draw_half_dino_dini_sigmoid(const struct display_adapter_descri
         display_gfx_draw_pixel(display_adapter, x_start + i, y_end - int_res, value);
     }
 }
+
+
 
 void display_gfx_draw_full_dino_dini_sigmoid(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, float k, uint8_t x_end, uint8_t y_end, uint8_t value) {
     // We only need to calculate half of the points because we are going to mirror the negative half
@@ -258,6 +290,8 @@ void display_gfx_draw_full_dino_dini_sigmoid(const struct display_adapter_descri
         display_gfx_draw_pixel(display_adapter, x_start + delta_x_half - i, y_start + delta_y_half + int_res, value);
     }
 }
+
+
 
 unsigned short display_gfx_get_font_x_size_len(const char *text, size_t len, uint8_t scale_factor, const GFXfont *font) {
     size_t text_length = len;
@@ -283,10 +317,14 @@ unsigned short display_gfx_get_font_x_size_len(const char *text, size_t len, uin
     return x_size;
 }
 
+
+
 unsigned short display_gfx_get_font_x_size(const char *text, uint8_t scale_factor, const GFXfont *font) {
     size_t len = strlen(text);
     return display_gfx_get_font_x_size_len(text, len, scale_factor, font);
 }
+
+
 
 void display_gfx_draw_image_grayscale(const struct display_adapter_descriptor *display_adapter, uint8_t x_start, uint8_t y_start, uint8_t width, uint8_t height, const uint8_t *pixel_data, uint8_t pixels_per_byte) {
 #if defined(DISPLAY_GFX_STATIC_GRAYSCALE_IMG_FORMAT_1_PIXEL_PER_BYTE)

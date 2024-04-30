@@ -2,6 +2,11 @@
 
 #include <stdlib.h>
 
+
+/// @brief 
+/// @param r_array 
+/// @param memory_buffer 
+/// @param size 
 void ring_array_create(struct ring_array* r_array, uint32_t* memory_buffer, uint8_t size) {
     r_array->size = size;
     r_array->current_item_pos = 0;
